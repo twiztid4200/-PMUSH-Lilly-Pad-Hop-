@@ -20,7 +20,7 @@
 <body>
     <canvas id="canvas" width="400" height="700"></canvas>
 
-    <!-- Username Screen -->
+    <!-- Username -->
     <div id="usernameScreen" class="menu" style="display:none;">
         <h2 style="color:#ff00cc;">ENTER YOUR NAME</h2>
         <input id="usernameInput" type="text" placeholder="Sporeholder420" maxlength="20">
@@ -57,6 +57,7 @@
     <div id="ui" style="display:none;">
         <div>SCORE: <span id="score">0</span></div>
         <div>BEST: <span id="highScore">0</span></div>
+        <button onclick="pauseGame()" style="position:absolute; top:60px; right:20px; width:auto; padding:8px 16px; font-size:16px; background:#555;">MENU</button>
     </div>
 
     <!-- Game Over -->
@@ -71,7 +72,6 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // ALL VARIABLES DECLARED HERE (this fixes the black screen)
         let gameState = 'menu';
         let gameRunning = false;
         let gameTime = 0;
@@ -94,10 +94,9 @@
         let highScore = parseInt(localStorage.getItem('pmushHigh')) || 0;
         let leaderboard = JSON.parse(localStorage.getItem('pmushLB')) || [];
 
-        const capColors = ['#4A7CFF', '#FF00CC', '#00FF88', '#FFAA00', '#AA00FF'];
+        const capColors = ['#4A7CFF', '#FF00CC', '#00FF88', '#FFAA00', '#AA00FF', '#FF0088', '#00AAFF', '#FFCC00'];
 
-        // (rest of the functions are the same as before - no changes needed)
-        function generatePlatforms() {
+        function generatePlatforms() { /* same as before */ 
             platforms = [];
             for (let i = 0; i < 9; i++) {
                 const springChance = Math.min(0.13, 0.06 + score / 16000);
@@ -111,7 +110,7 @@
             }
         }
 
-        function drawBackground() {
+        function drawBackground() { /* same as before */ 
             const grad = ctx.createLinearGradient(0,0,0,canvas.height);
             grad.addColorStop(0,'#1a0033'); grad.addColorStop(0.5,'#2a0055'); grad.addColorStop(1,'#000011');
             ctx.fillStyle = grad;
@@ -135,7 +134,7 @@
             ctx.shadowBlur = 0;
         }
 
-        function drawPlayer() {
+        function drawPlayer() { /* same as before */ 
             ctx.save();
             const cx = player.x + player.width/2;
             const cy = player.y + player.height/2 - 4;
@@ -176,7 +175,7 @@
             ctx.restore();
         }
 
-        function drawPlatforms() {
+        function drawPlatforms() { /* same */ 
             ctx.shadowBlur = 14; ctx.shadowColor = '#00ff9d';
             for (let p of platforms) {
                 ctx.fillStyle = p.spring ? '#ff00cc' : '#00cc77';
@@ -190,7 +189,7 @@
             ctx.shadowBlur = 0;
         }
 
-        function drawPowerUps() {
+        function drawPowerUps() { /* same */ 
             ctx.shadowBlur = 18;
             for (let pu of powerUps) {
                 if (pu.type === 'coin') {
@@ -217,7 +216,7 @@
             ctx.shadowBlur = 0;
         }
 
-        function update() {
+        function update() { /* same stable physics */ 
             if (!gameRunning || gameState !== 'playing') return;
             gameTime++;
 
@@ -354,7 +353,6 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Menu functions (unchanged)
         function saveUsernameAndContinue() {
             const input = document.getElementById('usernameInput').value.trim();
             username = input || 'Sporeholder';
@@ -443,6 +441,13 @@
         function backToTitle() {
             document.getElementById('usernameScreen').style.display = 'none';
             document.getElementById('mainMenu').style.display = 'block';
+        }
+
+        function pauseGame() {
+            gameRunning = false;
+            document.getElementById('ui').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'block';
+            gameState = 'menu';
         }
 
         // Controls
